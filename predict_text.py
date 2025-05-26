@@ -30,7 +30,7 @@ def predict(text):
     # Vectorize the text
     vectorized_text = vectorizer.transform([preprocessed_text])
     
-    # Predict sentiment (dummy prediction for illustration)
+    # Predict sentiment
     prediction = model.predict(vectorized_text)
     
     return prediction[0]
