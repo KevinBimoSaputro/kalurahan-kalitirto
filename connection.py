@@ -1,6 +1,7 @@
 import streamlit as st
 import joblib
 from supabase import create_client
+import os
 
 @st.cache_resource 
 def load_database():
@@ -17,15 +18,19 @@ def load_database():
 @st.cache_resource 
 def load_model():
     try:
+        if not os.path.exists('model.pkl'):
+            return None
         return joblib.load('model.pkl')
     except Exception as e:
-        st.error(f"Error loading model: {e}")
+        print(f"Error loading model: {e}")
         return None
 
 @st.cache_resource 
 def load_vectorizer():
     try:
+        if not os.path.exists('vectorizer.pkl'):
+            return None
         return joblib.load('vectorizer.pkl')
     except Exception as e:
-        st.error(f"Error loading vectorizer: {e}")
+        print(f"Error loading vectorizer: {e}")
         return None
