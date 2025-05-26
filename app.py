@@ -222,6 +222,31 @@ elif auth.is_admin_logged_in():
             st.session_state.admin_logged_in = False
             st.rerun()
     
+    # DEBUG: Test database connection
+    st.subheader("🔍 Debug Database Connection")
+    try:
+        import connection as conn
+        db = conn.load_database()
+        if db:
+            st.success("✅ Database connection successful")
+            
+            # Test query
+            test_data = db.select("*").limit(5).execute()
+            st.write(f"📊 Total records found: {len(test_data.data) if test_data.data else 0}")
+            
+            if test_data.data:
+                st.write("🔍 Sample data:")
+                st.json(test_data.data[:3])  # Show first 3 records
+            else:
+                st.warning("📭 No data found in database")
+                
+        else:
+            st.error("❌ Database connection failed")
+    except Exception as e:
+        st.error(f"❌ Database error: {e}")
+    
+    st.markdown("---")
+    
     # Konten admin - Statistik dan Analytics
     markdown = utils.set_markdown()
     
@@ -242,12 +267,25 @@ elif auth.is_admin_logged_in():
             st.warning("⚠️ Maksimal rentang waktu adalah 1 bulan.")
         elif start_date and end_date:
             try:
+                st.write(f"🔍 Querying data from {start_date} to {end_date}")
+                
                 positive = repo.get_count_by_prediction("positif", start_date, end_date)
                 neutral = repo.get_count_by_prediction("netral", start_date, end_date)
                 negative = repo.get_count_by_prediction("negatif", start_date, end_date)
+                
+                st.write(f"📊 Raw counts - Positif: {positive}, Netral: {neutral}, Negatif: {negative}")
 
                 if positive + neutral + negative == 0:
                     st.warning("📭 Tidak ada data untuk tanggal ini.")
+                    
+                    # Show all data for debugging
+                    st.write("🔍 Checking all data in database:")
+                    all_data = repo.get_feedback_history("2020-01-01T00:00:00", "2030-12-31T23:59:59")
+                    if all_data:
+                        st.write(f"📊 Total records in database: {len(all_data)}")
+                        st.dataframe(all_data[:10])  # Show first 10 records
+                    else:
+                        st.error("❌ No data found in entire database")
                 else:
                     utils.create_chart(positive, neutral, negative)
 
@@ -272,7 +310,9 @@ elif auth.is_admin_logged_in():
                     else:
                         st.info("📝 Belum ada riwayat feedback untuk periode ini.")
             except Exception as e:
-                st.error(f"Error loading statistics: {e}")
+                st.error(f"❌ Error loading statistics: {e}")
+                st.write("🔍 Full error details:")
+                st.exception(e)
     
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -329,3 +369,4 @@ else:
         st.rerun()
     
     st.markdown('</div>', unsafe_allow_html=True)
+
