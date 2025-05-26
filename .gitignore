@@ -1,14 +1,8 @@
 __pycache__/
 *.pyc
 *.pyo
-*.pyd
-.Python
-env/
-venv/
-.venv/
-pip-log.txt
-pip-delete-this-directory.txt
-.DS_Store
-
-# Jangan commit secrets ke GitHub (untuk keamanan)
+.env
 .streamlit/secrets.toml
+*.log
+.DS_Store
+Thumbs.db
