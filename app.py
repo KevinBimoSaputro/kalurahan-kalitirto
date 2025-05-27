@@ -109,22 +109,24 @@ st.markdown("""
     
     /* Uniform admin buttons */
     .stButton > button {
-        background: linear-gradient(135deg, #6c757d, #5a6268) !important;
-        color: white !important;
-        border: none !important;
+        background: white !important;
+        color: #6c757d !important;
+        border: 2px solid #dee2e6 !important;
         border-radius: 10px !important;
         padding: 0.5rem 1rem !important;
         font-weight: 600 !important;
-        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
         transition: all 0.3s ease !important;
         width: 100% !important;
         margin-bottom: 0.5rem !important;
     }
-    
+
     .stButton > button:hover {
         transform: translateY(-2px) !important;
-        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4) !important;
-        background: linear-gradient(135deg, #5a6268, #495057) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+        background: #f8f9fa !important;
+        border-color: #6c757d !important;
+        color: #495057 !important;
     }
     
     /* Clean metric boxes without borders */
