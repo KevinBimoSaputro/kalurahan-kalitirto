@@ -188,8 +188,8 @@ st.markdown("""
     
     /* Chart spacing fix */
     .chart-container {
-        margin-bottom: 2rem !important;
-        padding-bottom: 1rem;
+        margin-bottom: 3rem !important;
+        padding-bottom: 1.5rem;
     }
     
     /* Hide Streamlit branding */
