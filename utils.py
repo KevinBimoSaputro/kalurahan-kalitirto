@@ -6,13 +6,11 @@ from datetime import datetime, date, time
 import repository as repo
 from io import BytesIO
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
-import plotly.graph_objects as go
-import base64
 
 def process_feedback_history(data):
     df = pd.DataFrame(data)
@@ -181,21 +179,18 @@ def create_chart(positive, neutral, negative):
     
     st.plotly_chart(fig, use_container_width=True)
 
-def generate_pdf_report():
-    """Generate PDF report of feedback statistics"""
+def generate_pdf_report(start_date=None, end_date=None, positive=0, neutral=0, negative=0):
+    """Generate PDF report of feedback statistics for selected date range"""
     try:
-        # Get current date range (last 30 days)
-        today = date.today()
-        start_date = datetime.combine(today, time.min).isoformat()
-        end_date = datetime.combine(today, time.max).isoformat()
+        # If no dates provided, use today
+        if not start_date or not end_date:
+            today = date.today()
+            start_date = datetime.combine(today, time.min).isoformat()
+            end_date = datetime.combine(today, time.max).isoformat()
         
-        # Get data
-        positive = repo.get_count_by_prediction("positif", start_date, end_date)
-        neutral = repo.get_count_by_prediction("netral", start_date, end_date)
-        negative = repo.get_count_by_prediction("negatif", start_date, end_date)
-        total = positive + neutral + negative
-        
+        # Get feedback history for the selected period
         feedback_history = repo.get_feedback_history(start_date, end_date)
+        total = positive + neutral + negative
         
         # Create PDF
         buffer = BytesIO()
@@ -228,8 +223,21 @@ def generate_pdf_report():
         story.append(Paragraph("Kelurahan Kalitirto", styles['Normal']))
         story.append(Spacer(1, 20))
         
-        # Date info
-        story.append(Paragraph(f"📅 Tanggal Laporan: {today.strftime('%d %B %Y')}", styles['Normal']))
+        # Date range info
+        start_dt = datetime.fromisoformat(start_date.replace('Z', '+00:00'))
+        end_dt = datetime.fromisoformat(end_date.replace('Z', '+00:00'))
+        
+        jakarta_tz = pytz.timezone('Asia/Jakarta')
+        start_local = start_dt.astimezone(jakarta_tz)
+        end_local = end_dt.astimezone(jakarta_tz)
+        
+        if start_local.date() == end_local.date():
+            date_range = f"📅 Tanggal: {start_local.strftime('%d %B %Y')}"
+        else:
+            date_range = f"📅 Periode: {start_local.strftime('%d %B %Y')} - {end_local.strftime('%d %B %Y')}"
+        
+        story.append(Paragraph(date_range, styles['Normal']))
+        story.append(Paragraph(f"🕒 Dibuat: {datetime.now().strftime('%d %B %Y, %H:%M WIB')}", styles['Normal']))
         story.append(Spacer(1, 20))
         
         # Summary statistics
@@ -241,7 +249,7 @@ def generate_pdf_report():
             ['😊 Positif', str(positive), f"{(positive/total*100):.1f}%" if total > 0 else "0%"],
             ['😐 Netral', str(neutral), f"{(neutral/total*100):.1f}%" if total > 0 else "0%"],
             ['😞 Negatif', str(negative), f"{(negative/total*100):.1f}%" if total > 0 else "0%"],
-            ['📊 Total', str(total), "100%"]
+            ['📊 Total', str(total), "100%" if total > 0 else "0%"]
         ]
         
         stats_table = Table(stats_data, colWidths=[2*inch, 1*inch, 1*inch])
@@ -262,13 +270,15 @@ def generate_pdf_report():
         # Feedback history
         if feedback_history:
             story.append(Paragraph("📝 RIWAYAT FEEDBACK", heading_style))
+            story.append(Paragraph(f"Menampilkan semua {len(feedback_history)} feedback dari periode yang dipilih", styles['Normal']))
+            story.append(Spacer(1, 10))
             
             # Prepare feedback data for table
             feedback_data = [['No', 'Feedback', 'Sentimen', 'Tanggal']]
             
-            for i, item in enumerate(feedback_history[:20], 1):  # Limit to 20 items
-                feedback_text = item['feedback'][:50] + "..." if len(item['feedback']) > 50 else item['feedback']
-                created_at = pd.to_datetime(item['created_at']).strftime('%d/%m/%Y %H:%M')
+            for i, item in enumerate(feedback_history, 1):  # Show ALL items
+                feedback_text = item['feedback'][:60] + "..." if len(item['feedback']) > 60 else item['feedback']
+                created_at = pd.to_datetime(item['created_at']).astimezone(jakarta_tz).strftime('%d/%m/%Y %H:%M')
                 
                 feedback_data.append([
                     str(i),
@@ -277,14 +287,14 @@ def generate_pdf_report():
                     created_at
                 ])
             
-            feedback_table = Table(feedback_data, colWidths=[0.5*inch, 3*inch, 1*inch, 1.5*inch])
+            feedback_table = Table(feedback_data, colWidths=[0.4*inch, 3.5*inch, 0.8*inch, 1.3*inch])
             feedback_table.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
                 ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
                 ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
                 ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
                 ('FONTSIZE', (0, 0), (-1, 0), 10),
-                ('FONTSIZE', (0, 1), (-1, -1), 8),
+                ('FONTSIZE', (0, 1), (-1, -1), 7),
                 ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
                 ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
                 ('GRID', (0, 0), (-1, -1), 1, colors.black),
@@ -292,11 +302,15 @@ def generate_pdf_report():
             ]))
             
             story.append(feedback_table)
+        else:
+            story.append(Paragraph("📝 RIWAYAT FEEDBACK", heading_style))
+            story.append(Paragraph("Tidak ada feedback untuk periode yang dipilih.", styles['Normal']))
         
         # Footer
         story.append(Spacer(1, 30))
         story.append(Paragraph("📍 Kelurahan Kalitirto", styles['Normal']))
         story.append(Paragraph("📞 (0274) 123-4567 | ✉️ kelurahan.kalitirto@gmail.com", styles['Normal']))
+        story.append(Paragraph("🏠 Jl. Kalitirto No. 123, Yogyakarta", styles['Normal']))
         
         # Build PDF
         doc.build(story)
