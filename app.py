@@ -279,7 +279,9 @@ elif auth.is_admin_logged_in():
                 else:
                     utils.create_chart(positive, neutral, negative)
 
-                    col1, col2, col3 = st.columns(3)
+                    col1, col2, col3, col4 = st.columns(4)
+                    total_data = positive + neutral + negative
+                    
                     with col1:
                         st.metric(label="😊 Positif", value=positive, delta=None, help="Positive feedback")
                         st.markdown('<div class="stMetricValue-positif"></div>', unsafe_allow_html=True)
@@ -289,6 +291,9 @@ elif auth.is_admin_logged_in():
                     with col3:
                         st.metric(label="😞 Negatif", value=negative, delta=None, help="Negative feedback")
                         st.markdown('<div class="stMetricValue-negatif"></div>', unsafe_allow_html=True)
+                    with col4:
+                        st.metric(label="📊 Total", value=total_data, delta=None, help="Total semua feedback")
+                        st.markdown('<div class="stMetricValue-total"></div>', unsafe_allow_html=True)
 
                     st.container(height=30, border=False)
 
