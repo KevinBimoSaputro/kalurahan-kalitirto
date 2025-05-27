@@ -125,7 +125,7 @@ st.markdown("""
         color: white;
         font-weight: 600;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-out 1.7s forwards;
+        animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-out 5.7s forwards;
         max-width: 400px;
         word-wrap: break-word;
     }
@@ -384,7 +384,7 @@ def show_notification(message, notification_type="success"):
             if (notification) {{
                 notification.style.display = 'none';
             }}
-        }}, 2000);
+        }}, 6000);
     </script>
     """, unsafe_allow_html=True)
 
