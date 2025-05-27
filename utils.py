@@ -164,11 +164,11 @@ def create_chart(positive, neutral, negative):
         )
     )
 
-    # Set semua teks menjadi hitam
+    # Set warna teks berbeda untuk setiap segmen
     for i, trace in enumerate(fig.data):
         if i == 0:  # Trace pertama (pie chart)
-            # Semua teks hitam
-            text_colors = ['black', 'black', 'black']
+            # Positif: putih, Netral: hitam, Negatif: putih
+            text_colors = ['white', 'black', 'white']
             trace.update(
                 textfont=dict(
                     color=text_colors,
