@@ -186,10 +186,15 @@ st.markdown("""
         margin: 0;
     }
     
-    /* Chart spacing fix - like 2 enters in MS Word */
-    .chart-container {
-        margin-bottom: 5rem !important;
-        padding-bottom: 2rem !important;
+    /* Separator line between chart and metrics */
+    .chart-separator {
+        border: none;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #dee2e6, transparent);
+        margin: 2rem 0;
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
     }
     
     /* Hide Streamlit branding */
@@ -235,6 +240,11 @@ st.markdown("""
         
         .metric-label {
             font-size: 1rem !important;
+        }
+        
+        .chart-separator {
+            margin: 1.5rem 0;
+            width: 90%;
         }
     }
 </style>
@@ -370,10 +380,11 @@ elif auth.is_admin_logged_in():
                     st.warning("📭 Tidak ada data untuk periode ini.")
                     st.info(f"💡 **Tip:** Coba ubah rentang tanggal. Total data tersedia: {total_records} feedback")
                 else:
-                    # Chart with proper spacing
-                    st.markdown('<div class="chart-container">', unsafe_allow_html=True)
+                    # Chart
                     utils.create_chart(positive, neutral, negative)
-                    st.markdown('</div>', unsafe_allow_html=True)
+                    
+                    # Separator line
+                    st.markdown('<hr class="chart-separator">', unsafe_allow_html=True)
 
                     col1, col2, col3, col4 = st.columns(4)
                     total_data = positive + neutral + negative
