@@ -338,23 +338,6 @@ elif auth.is_admin_logged_in():
             st.session_state.show_admin_login = False
             st.session_state.admin_logged_in = False
             st.rerun()
-        if st.button("📄 Download PDF", key="download_pdf"):
-            # Generate PDF akan ditambahkan di utils.py
-            try:
-                pdf_data = utils.generate_pdf_report()
-                if pdf_data:
-                    st.download_button(
-                        label="📥 Download Laporan PDF",
-                        data=pdf_data,
-                        file_name=f"laporan_feedback_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
-                        mime="application/pdf",
-                        key="download_pdf_btn"
-                    )
-                    st.success("✅ PDF siap didownload!")
-                else:
-                    st.error("❌ Gagal membuat PDF")
-            except Exception as e:
-                st.error(f"❌ Error generating PDF: {e}")
     
     # Status Connection (Simple) - Hapus total feedback
     connection_status = repo.get_connection_status()
@@ -437,6 +420,39 @@ elif auth.is_admin_logged_in():
                             <div class="metric-value">{total_data}</div>
                         </div>
                         """, unsafe_allow_html=True)
+
+                    # PDF Download button - positioned after metrics
+                    col_pdf1, col_pdf2, col_pdf3 = st.columns([1, 1, 1])
+                    with col_pdf2:
+                        if st.button("📄 Download PDF", key="download_pdf", use_container_width=True):
+                            try:
+                                # Pass the selected date range to PDF generator
+                                pdf_data = utils.generate_pdf_report(
+                                    start_date=start_date, 
+                                    end_date=end_date,
+                                    positive=positive,
+                                    neutral=neutral,
+                                    negative=negative
+                                )
+                                if pdf_data:
+                                    # Format date for filename
+                                    start_str = filter_date[0].strftime('%Y%m%d')
+                                    end_str = filter_date[1].strftime('%Y%m%d')
+                                    filename = f"laporan_feedback_{start_str}_to_{end_str}.pdf"
+                                    
+                                    st.download_button(
+                                        label="📥 Download Laporan PDF",
+                                        data=pdf_data,
+                                        file_name=filename,
+                                        mime="application/pdf",
+                                        key="download_pdf_btn",
+                                        use_container_width=True
+                                    )
+                                    st.success("✅ PDF siap didownload!")
+                                else:
+                                    st.error("❌ Gagal membuat PDF")
+                            except Exception as e:
+                                st.error(f"❌ Error generating PDF: {e}")
 
                     st.container(height=30, border=False)
 
