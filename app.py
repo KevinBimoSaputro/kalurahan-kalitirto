@@ -20,36 +20,17 @@ if "admin_logged_in" not in st.session_state:
 if "show_admin_login" not in st.session_state:
     st.session_state.show_admin_login = False
 
-# CSS untuk styling dengan background
+# CSS untuk styling
 st.markdown("""
 <style>
-    /* Background Image */
-    .stApp {
-        background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), 
-                    url('https://drive.google.com/uc?export=view&id=16IwNAEmeZBoXPw9MZib-qxcsAMIu6MRI');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        background-repeat: no-repeat;
-        min-height: 100vh;
-    }
-    
-    /* Main content container */
     .main-content {
         animation: fadeIn 0.8s ease-out;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 20px;
-        padding: 2rem;
-        margin: 1rem;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(15px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
     @keyframes fadeIn {
         from {
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(20px);
         }
         to {
             opacity: 1;
@@ -57,147 +38,73 @@ st.markdown("""
         }
     }
     
-    /* Header section with glass effect */
     .header-section {
-        padding: 2rem;
-        margin-bottom: 2rem;
+        padding: 0.5rem 0;
+        margin-bottom: 1.5rem;
         color: #2c3e50;
         text-align: center;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(15px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
     }
     
     .header-section h1 {
-        font-size: 2.8rem;
+        font-size: 2.5rem;
         font-weight: 700;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.3rem;
         color: #2c3e50;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        background: linear-gradient(135deg, #2c3e50, #4facfe);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
     }
     
     .header-section h2 {
-        font-size: 2rem;
+        font-size: 1.8rem;
         font-weight: 500;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
         color: #34495e;
     }
     
     .header-section hr {
         border: none;
-        height: 3px;
-        background: linear-gradient(90deg, transparent, #4facfe, #00f2fe, #4facfe, transparent);
-        margin: 2rem auto;
-        width: 70%;
-        border-radius: 2px;
+        height: 1px;
+        background: #dee2e6;
+        margin: 1.5rem auto;
+        width: 60%;
     }
     
     .header-section h3 {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
         font-weight: 600;
-        margin-bottom: 1rem;
+        margin-bottom: 0.8rem;
         color: #2c3e50;
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        padding: 0;
         text-align: left;
     }
     
     .header-section .support-text {
-        font-size: 1.1rem;
+        font-size: 1rem;
         color: #6c757d;
-        line-height: 1.8;
+        line-height: 1.6;
+        width: 100%;
+        margin: 0;
+        padding: 0;
         text-align: justify;
         margin-bottom: 1rem;
-        padding: 1rem;
-        background: rgba(248, 249, 250, 0.8);
-        border-radius: 10px;
-        border-left: 4px solid #4facfe;
     }
     
-    /* Admin panel with enhanced gradient */
     .admin-panel {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 2rem;
-        border-radius: 20px;
+        background: #4facfe;
+        padding: 1.5rem;
+        border-radius: 15px;
         margin-bottom: 2rem;
         color: white;
-        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
-        backdrop-filter: blur(15px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
     }
     
-    .admin-panel h1 {
-        font-size: 2.2rem;
-        margin-bottom: 0.5rem;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    }
-    
-    /* Status card with glass effect */
     .status-card {
-        background: rgba(248, 249, 250, 0.95);
-        padding: 1.5rem;
-        border-radius: 15px;
-        border-left: 5px solid #28a745;
-        margin-bottom: 1.5rem;
-        backdrop-filter: blur(15px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    /* Enhanced chat input */
-    .stChatInput {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 20px;
-        backdrop-filter: blur(15px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    /* Enhanced metrics */
-    .stMetric {
-        background: rgba(255, 255, 255, 0.9);
-        padding: 1.5rem;
-        border-radius: 15px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(15px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        transition: transform 0.3s ease;
-    }
-    
-    .stMetric:hover {
-        transform: translateY(-5px);
-    }
-    
-    /* Enhanced buttons */
-    .stButton > button {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        color: white;
-        border: none;
+        background: #f8f9fa;
+        padding: 1rem;
         border-radius: 10px;
-        padding: 0.5rem 1rem;
-        font-weight: 600;
-        box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
-        transition: all 0.3s ease;
-    }
-    
-    .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(79, 172, 254, 0.6);
-    }
-    
-    /* Contact section */
-    .contact-section {
-        background: rgba(255, 255, 255, 0.9);
-        padding: 2rem;
-        border-radius: 15px;
-        margin-top: 2rem;
-        backdrop-filter: blur(15px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-left: 4px solid #28a745;
+        margin-bottom: 1rem;
     }
     
     /* Hide Streamlit branding */
@@ -207,39 +114,34 @@ st.markdown("""
     
     /* Responsive design */
     @media (max-width: 768px) {
-        .stApp {
-            background-attachment: scroll;
-        }
-        
-        .main-content {
-            margin: 0.5rem;
-            padding: 1.5rem;
-        }
-        
         .header-section {
-            padding: 1.5rem;
+            padding: 0.3rem 0;
         }
         
         .header-section h1 {
-            font-size: 2.2rem;
+            font-size: 2rem;
+            margin-bottom: 0.2rem;
         }
         
         .header-section h2 {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .header-section hr {
+            margin: 1rem auto;
         }
         
         .header-section h3 {
-            font-size: 1.5rem;
-            text-align: center;
+            font-size: 1.4rem;
+            text-align: left;
+            margin-bottom: 0.6rem;
         }
         
         .header-section .support-text {
-            font-size: 1rem;
+            font-size: 0.95rem;
             text-align: center;
-        }
-        
-        .admin-panel h1 {
-            font-size: 1.8rem;
+            margin-bottom: 0.8rem;
         }
     }
 </style>
@@ -253,7 +155,6 @@ except:
 
 if not model_available:
     # Enhanced model generation page
-    st.markdown('<div class="main-content">', unsafe_allow_html=True)
     st.markdown("""
     <div style="text-align: center; padding: 3rem;">
         <h1>🤖 Setup Model Machine Learning</h1>
@@ -290,12 +191,10 @@ if not model_available:
     - **Waktu proses**: sekitar 10-30 detik
     - **Tidak memerlukan internet** - semua proses lokal
     """)
-    st.markdown('</div>', unsafe_allow_html=True)
     st.stop()
 
 # Logika tampilan berdasarkan status
 if st.session_state.show_admin_login and not auth.is_admin_logged_in():
-    st.markdown('<div class="main-content">', unsafe_allow_html=True)
     # Tombol kembali di tengah atas dengan spacing yang lebih baik
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
@@ -308,7 +207,6 @@ if st.session_state.show_admin_login and not auth.is_admin_logged_in():
     
     # Form login admin tanpa column wrapper - langsung ke kiri
     auth.admin_login_form()
-    st.markdown('</div>', unsafe_allow_html=True)
 
 elif auth.is_admin_logged_in():
     # Dashboard Admin
@@ -407,10 +305,10 @@ elif auth.is_admin_logged_in():
     st.markdown('</div>', unsafe_allow_html=True)
 
 else:
-    # Tampilan User Biasa - Form Feedback dengan Background
+    # Tampilan User Biasa - Form Feedback
     st.markdown('<div class="main-content">', unsafe_allow_html=True)
     
-    # Header dengan enhanced styling
+    # Header tanpa kotak background
     st.markdown("""
     <div class="header-section">
         <h1>📝 Form Kritik dan Saran</h1>
@@ -418,8 +316,7 @@ else:
         <hr>
         <h3>💬 Berikan Kritik dan Saran Anda</h3>
         <p class="support-text">
-            <strong>Kami menghargai setiap masukan Anda.</strong><br>
-            Silakan tuliskan kritik, saran, atau masukan di bawah ini. 
+            Kami menghargai setiap masukan Anda. Silakan tuliskan kritik, saran, atau masukan di bawah ini. 
             Feedback Anda sangat berharga untuk meningkatkan kualitas pelayanan kami.
         </p>
     </div>
@@ -444,18 +341,15 @@ else:
                 st.error(f"Terjadi kesalahan: {e}")
                 st.toast("❌ Terjadi kesalahan. Silakan coba lagi.")
     
-    # Kontak dengan enhanced styling
+    # Kontak saja yang tersisa
     st.markdown("""
-    <div class="contact-section">
-        <h3>📞 Kontak</h3>
-        <p>Jika ada pertanyaan mendesak, hubungi:</p>
-        <ul>
-            <li><strong>Telepon:</strong> (0274) 123-4567</li>
-            <li><strong>Email:</strong> kelurahan.kalitirto@gmail.com</li>
-            <li><strong>Alamat:</strong> Jl. Kalitirto No. 123, Yogyakarta</li>
-        </ul>
-    </div>
-    """, unsafe_allow_html=True)
+    ---
+    ### 📞 Kontak
+    Jika ada pertanyaan mendesak, hubungi:
+    - **Telepon**: (0274) 123-4567
+    - **Email**: kelurahan.kalitirto@gmail.com
+    - **Alamat**: Jl. Kalitirto No. 123, Yogyakarta
+    """)
     
     # Tombol admin di pojok kanan bawah
     if st.button("👨‍💼 Mode Admin", key="admin_toggle", help="Klik untuk masuk ke dashboard admin"):
