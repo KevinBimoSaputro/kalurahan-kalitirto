@@ -158,16 +158,24 @@ def create_chart(positive, neutral, negative):
         insidetextorientation='auto',
         hoverinfo='skip',
         hovertemplate=None,
-        textfont=dict(
-            color='white', 
-            size=16, 
-            family='Arial, sans-serif'
-        ),
         marker=dict(
             colors=colors,  # Pastikan warna sesuai urutan
             line=dict(color='#FFFFFF', width=2)
         )
     )
+
+    # Set warna teks berbeda untuk setiap segmen
+    for i, trace in enumerate(fig.data):
+        if i == 0:  # Trace pertama (pie chart)
+            # Positif: putih, Netral: hitam, Negatif: putih
+            text_colors = ['white', 'black', 'white']
+            trace.update(
+                textfont=dict(
+                    color=text_colors,
+                    size=16,
+                    family='Arial, sans-serif'
+                )
+            )
     
     # Update layout
     fig.update_layout(
