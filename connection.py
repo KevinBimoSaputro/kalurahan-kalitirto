@@ -8,10 +8,13 @@ def load_database():
     try:
         url = st.secrets["supabase"]["url"]
         key = st.secrets["supabase"]["key"]
-        table = st.secrets["supabase"]["table"]
+        table = "mst_feedback"  # Fixed: use correct table name from screenshot
         
         # Create client
         client = create_client(url, key)
+        
+        # Test connection
+        test_result = client.table(table).select("*").limit(1).execute()
         
         return client.table(table)
         
