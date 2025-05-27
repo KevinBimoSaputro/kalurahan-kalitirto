@@ -321,6 +321,14 @@ elif auth.is_admin_logged_in():
     # Dashboard Admin
     st.markdown('<div class="main-content">', unsafe_allow_html=True)
     
+    # Store filter state for PDF generation
+    current_filter_date = None
+    current_start_date = None
+    current_end_date = None
+    current_positive = 0
+    current_neutral = 0
+    current_negative = 0
+    
     # Header admin dengan tombol logout
     col1, col2 = st.columns([2, 1])
     with col1:
@@ -368,6 +376,12 @@ elif auth.is_admin_logged_in():
         start_date = datetime.combine(filter_date[0], time.min).isoformat()
         end_date = datetime.combine(filter_date[1], time.max).isoformat()
         range_days = (filter_date[1] - filter_date[0]).days
+        
+        # Store filter state for PDF
+        current_filter_date = filter_date
+        current_start_date = start_date
+        current_end_date = end_date
+        
         if range_days > 30:
             st.warning("⚠️ Maksimal rentang waktu adalah 1 bulan.")
         elif start_date and end_date:
@@ -375,6 +389,11 @@ elif auth.is_admin_logged_in():
                 positive = repo.get_count_by_prediction("positif", start_date, end_date)
                 neutral = repo.get_count_by_prediction("netral", start_date, end_date)
                 negative = repo.get_count_by_prediction("negatif", start_date, end_date)
+                
+                # Store data for PDF
+                current_positive = positive
+                current_neutral = neutral
+                current_negative = negative
 
                 if positive + neutral + negative == 0:
                     st.warning("📭 Tidak ada data untuk periode ini.")
@@ -421,37 +440,6 @@ elif auth.is_admin_logged_in():
                         </div>
                         """, unsafe_allow_html=True)
 
-                    # PDF Download button - positioned after metrics, replacing clear cache position
-                    with col2:
-                        if st.button("📄 Download PDF", key="download_pdf"):
-                            try:
-                                # Pass the selected date range to PDF generator
-                                pdf_data = utils.generate_pdf_report(
-                                    start_date=start_date, 
-                                    end_date=end_date,
-                                    positive=positive,
-                                    neutral=neutral,
-                                    negative=negative
-                                )
-                                if pdf_data:
-                                    # Format date for filename
-                                    start_str = filter_date[0].strftime('%Y%m%d')
-                                    end_str = filter_date[1].strftime('%Y%m%d')
-                                    filename = f"laporan_feedback_{start_str}_to_{end_str}.pdf"
-                                    
-                                    st.download_button(
-                                        label="📥 Download Laporan PDF",
-                                        data=pdf_data,
-                                        file_name=filename,
-                                        mime="application/pdf",
-                                        key="download_pdf_btn"
-                                    )
-                                    st.success("✅ PDF siap didownload!")
-                                else:
-                                    st.error("❌ Gagal membuat PDF")
-                            except Exception as e:
-                                st.error(f"❌ Error generating PDF: {e}")
-
                     st.container(height=30, border=False)
 
                     feedback_history = repo.get_feedback_history(start_date, end_date)
@@ -463,6 +451,38 @@ elif auth.is_admin_logged_in():
                         st.info("📝 Belum ada riwayat feedback untuk periode ini.")
             except Exception as e:
                 st.error(f"❌ Error loading statistics: {e}")
+    
+    # PDF Download button - positioned in sidebar area (col2) after data is loaded
+    with col2:
+        if current_start_date and current_end_date and (current_positive + current_neutral + current_negative) > 0:
+            if st.button("📄 Download PDF", key="download_pdf"):
+                try:
+                    # Pass the selected date range to PDF generator
+                    pdf_data = utils.generate_pdf_report(
+                        start_date=current_start_date, 
+                        end_date=current_end_date,
+                        positive=current_positive,
+                        neutral=current_neutral,
+                        negative=current_negative
+                    )
+                    if pdf_data:
+                        # Format date for filename
+                        start_str = current_filter_date[0].strftime('%Y%m%d')
+                        end_str = current_filter_date[1].strftime('%Y%m%d')
+                        filename = f"laporan_feedback_{start_str}_to_{end_str}.pdf"
+                        
+                        st.download_button(
+                            label="📥 Download Laporan PDF",
+                            data=pdf_data,
+                            file_name=filename,
+                            mime="application/pdf",
+                            key="download_pdf_btn"
+                        )
+                        st.success("✅ PDF siap didownload!")
+                    else:
+                        st.error("❌ Gagal membuat PDF")
+                except Exception as e:
+                    st.error(f"❌ Error generating PDF: {e}")
     
     st.markdown('</div>', unsafe_allow_html=True)
 
