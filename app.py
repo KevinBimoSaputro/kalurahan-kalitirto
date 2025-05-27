@@ -25,29 +25,31 @@ st.markdown("""
 <style>
     /* Background Image */
     .stApp {
-        background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), 
-                    url('/images/kelurahan-bg.png');
+        background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), 
+                    url('https://drive.google.com/uc?export=view&id=16IwNAEmeZBoXPw9MZib-qxcsAMIu6MRI');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
         background-repeat: no-repeat;
+        min-height: 100vh;
     }
     
-    /* Alternative: Jika ingin background lebih subtle */
+    /* Main content container */
     .main-content {
         animation: fadeIn 0.8s ease-out;
         background: rgba(255, 255, 255, 0.95);
-        border-radius: 15px;
+        border-radius: 20px;
         padding: 2rem;
         margin: 1rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(10px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
     @keyframes fadeIn {
         from {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px);
         }
         to {
             opacity: 1;
@@ -55,106 +57,147 @@ st.markdown("""
         }
     }
     
+    /* Header section with glass effect */
     .header-section {
-        padding: 0.5rem 0;
-        margin-bottom: 1.5rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
         color: #2c3e50;
         text-align: center;
         background: rgba(255, 255, 255, 0.9);
-        border-radius: 15px;
-        padding: 2rem;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
     }
     
     .header-section h1 {
-        font-size: 2.5rem;
+        font-size: 2.8rem;
         font-weight: 700;
-        margin-bottom: 0.3rem;
+        margin-bottom: 0.5rem;
         color: #2c3e50;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(135deg, #2c3e50, #4facfe);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
     
     .header-section h2 {
-        font-size: 1.8rem;
+        font-size: 2rem;
         font-weight: 500;
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
         color: #34495e;
     }
     
     .header-section hr {
         border: none;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, #4facfe, transparent);
-        margin: 1.5rem auto;
-        width: 60%;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #4facfe, #00f2fe, #4facfe, transparent);
+        margin: 2rem auto;
+        width: 70%;
+        border-radius: 2px;
     }
     
     .header-section h3 {
-        font-size: 1.6rem;
+        font-size: 1.8rem;
         font-weight: 600;
-        margin-bottom: 0.8rem;
+        margin-bottom: 1rem;
         color: #2c3e50;
-        width: 100%;
-        margin-left: 0;
-        margin-right: 0;
-        padding: 0;
         text-align: left;
     }
     
     .header-section .support-text {
-        font-size: 1rem;
+        font-size: 1.1rem;
         color: #6c757d;
-        line-height: 1.6;
-        width: 100%;
-        margin: 0;
-        padding: 0;
+        line-height: 1.8;
         text-align: justify;
         margin-bottom: 1rem;
+        padding: 1rem;
+        background: rgba(248, 249, 250, 0.8);
+        border-radius: 10px;
+        border-left: 4px solid #4facfe;
     }
     
+    /* Admin panel with enhanced gradient */
     .admin-panel {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        padding: 1.5rem;
-        border-radius: 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2rem;
+        border-radius: 20px;
         margin-bottom: 2rem;
         color: white;
-        box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
-        backdrop-filter: blur(10px);
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
+    .admin-panel h1 {
+        font-size: 2.2rem;
+        margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Status card with glass effect */
     .status-card {
         background: rgba(248, 249, 250, 0.95);
-        padding: 1rem;
-        border-radius: 10px;
-        border-left: 4px solid #28a745;
-        margin-bottom: 1rem;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        border-radius: 15px;
+        border-left: 5px solid #28a745;
+        margin-bottom: 1.5rem;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
     }
     
-    /* Chat Input Styling */
+    /* Enhanced chat input */
     .stChatInput {
         background: rgba(255, 255, 255, 0.95);
-        border-radius: 15px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
     }
     
-    /* Cards and containers */
-    .stContainer {
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 15px;
-        padding: 1rem;
-        backdrop-filter: blur(10px);
-    }
-    
-    /* Metrics styling */
+    /* Enhanced metrics */
     .stMetric {
         background: rgba(255, 255, 255, 0.9);
-        padding: 1rem;
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: transform 0.3s ease;
+    }
+    
+    .stMetric:hover {
+        transform: translateY(-5px);
+    }
+    
+    /* Enhanced buttons */
+    .stButton > button {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        border: none;
         border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(10px);
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        transition: all 0.3s ease;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(79, 172, 254, 0.6);
+    }
+    
+    /* Contact section */
+    .contact-section {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 2rem;
+        border-radius: 15px;
+        margin-top: 2rem;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
     }
     
     /* Hide Streamlit branding */
@@ -170,37 +213,33 @@ st.markdown("""
         
         .main-content {
             margin: 0.5rem;
-            padding: 1rem;
+            padding: 1.5rem;
         }
         
         .header-section {
-            padding: 1rem;
+            padding: 1.5rem;
         }
         
         .header-section h1 {
-            font-size: 2rem;
-            margin-bottom: 0.2rem;
+            font-size: 2.2rem;
         }
         
         .header-section h2 {
-            font-size: 1.5rem;
-            margin-bottom: 0.8rem;
-        }
-        
-        .header-section hr {
-            margin: 1rem auto;
+            font-size: 1.6rem;
         }
         
         .header-section h3 {
-            font-size: 1.4rem;
-            text-align: left;
-            margin-bottom: 0.6rem;
+            font-size: 1.5rem;
+            text-align: center;
         }
         
         .header-section .support-text {
-            font-size: 0.95rem;
+            font-size: 1rem;
             text-align: center;
-            margin-bottom: 0.8rem;
+        }
+        
+        .admin-panel h1 {
+            font-size: 1.8rem;
         }
     }
 </style>
@@ -368,10 +407,10 @@ elif auth.is_admin_logged_in():
     st.markdown('</div>', unsafe_allow_html=True)
 
 else:
-    # Tampilan User Biasa - Form Feedback
+    # Tampilan User Biasa - Form Feedback dengan Background
     st.markdown('<div class="main-content">', unsafe_allow_html=True)
     
-    # Header dengan background
+    # Header dengan enhanced styling
     st.markdown("""
     <div class="header-section">
         <h1>📝 Form Kritik dan Saran</h1>
@@ -379,7 +418,8 @@ else:
         <hr>
         <h3>💬 Berikan Kritik dan Saran Anda</h3>
         <p class="support-text">
-            Kami menghargai setiap masukan Anda. Silakan tuliskan kritik, saran, atau masukan di bawah ini. 
+            <strong>Kami menghargai setiap masukan Anda.</strong><br>
+            Silakan tuliskan kritik, saran, atau masukan di bawah ini. 
             Feedback Anda sangat berharga untuk meningkatkan kualitas pelayanan kami.
         </p>
     </div>
@@ -404,15 +444,18 @@ else:
                 st.error(f"Terjadi kesalahan: {e}")
                 st.toast("❌ Terjadi kesalahan. Silakan coba lagi.")
     
-    # Kontak dengan background
+    # Kontak dengan enhanced styling
     st.markdown("""
-    ---
-    ### 📞 Kontak
-    Jika ada pertanyaan mendesak, hubungi:
-    - **Telepon**: (0274) 123-4567
-    - **Email**: kelurahan.kalitirto@gmail.com
-    - **Alamat**: Jl. Kalitirto No. 123, Yogyakarta
-    """)
+    <div class="contact-section">
+        <h3>📞 Kontak</h3>
+        <p>Jika ada pertanyaan mendesak, hubungi:</p>
+        <ul>
+            <li><strong>Telepon:</strong> (0274) 123-4567</li>
+            <li><strong>Email:</strong> kelurahan.kalitirto@gmail.com</li>
+            <li><strong>Alamat:</strong> Jl. Kalitirto No. 123, Yogyakarta</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Tombol admin di pojok kanan bawah
     if st.button("👨‍💼 Mode Admin", key="admin_toggle", help="Klik untuk masuk ke dashboard admin"):
