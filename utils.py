@@ -14,48 +14,101 @@ def process_feedback_history(data):
 def set_markdown():
     return st.markdown("""
     <style>
-        .stMetricValue-positif {
-            background: linear-gradient(45deg, #28a745, #20c997);
-            color: white;
+        /* Colored box styling for metrics */
+        .stMetric {
+            background: transparent !important;
+            padding: 0 !important;
+        }
+        
+        .metric-box-positif {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white !important;
             border-radius: 15px;
-            padding: 10px;
+            padding: 1.5rem;
             text-align: center;
-            font-size: 20px;
             box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
             transition: transform 0.3s ease;
+            margin-bottom: 1rem;
         }
-        .stMetricValue-positif:hover {
-            transform: translateY(-2px);
+        .metric-box-positif:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
         }
-        .stMetricValue-negatif {
-            background: linear-gradient(45deg, #dc3545, #e74c3c);
-            color: white;
+        
+        .metric-box-negatif {
+            background: linear-gradient(135deg, #dc3545, #e74c3c);
+            color: white !important;
             border-radius: 15px;
-            padding: 10px;
+            padding: 1.5rem;
             text-align: center;
-            font-size: 20px;
             box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
             transition: transform 0.3s ease;
+            margin-bottom: 1rem;
         }
-        .stMetricValue-negatif:hover {
-            transform: translateY(-2px);
+        .metric-box-negatif:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
         }
-        .stMetricValue-netral {
-            background: linear-gradient(45deg, #ffc107, #f39c12);
-            color: white;
+        
+        .metric-box-netral {
+            background: linear-gradient(135deg, #ffc107, #f39c12);
+            color: white !important;
             border-radius: 15px;
-            padding: 10px;
+            padding: 1.5rem;
             text-align: center;
-            font-size: 20px;
             box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
             transition: transform 0.3s ease;
+            margin-bottom: 1rem;
         }
-        .stMetricValue-netral:hover {
-            transform: translateY(-2px);
+        .metric-box-netral:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
         }
-        .stMetricLabel {
-            font-size: 16px;
-            font-weight: bold;
+        
+        .metric-box-total {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            color: white !important;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+            transition: transform 0.3s ease;
+            margin-bottom: 1rem;
+        }
+        .metric-box-total:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        }
+        
+        .metric-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: white !important;
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white !important;
+            margin: 0;
+        }
+        
+        /* Hide default streamlit metric styling */
+        .stMetric > div {
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+        }
+        
+        .stMetric label {
+            display: none !important;
+        }
+        
+        .stMetric [data-testid="metric-container"] {
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
         }
         
         /* Animasi untuk dataframe */
