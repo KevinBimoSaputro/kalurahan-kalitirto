@@ -421,7 +421,18 @@ elif auth.is_admin_logged_in():
                         </div>
                         """, unsafe_allow_html=True)
 
-                    # PDF Download button - positioned after metrics
+                    st.container(height=30, border=False)
+
+                    feedback_history = repo.get_feedback_history(start_date, end_date)
+                    if feedback_history:
+                        data = utils.process_feedback_history(feedback_history)
+                        st.subheader("📝 Riwayat Feedback")
+                        st.dataframe(data, use_container_width=True, hide_index=True, height=400)
+                    else:
+                        st.info("📝 Belum ada riwayat feedback untuk periode ini.")
+
+                    # PDF Download button - moved to bottom
+                    st.container(height=20, border=False)
                     col_pdf1, col_pdf2, col_pdf3 = st.columns([1, 1, 1])
                     with col_pdf2:
                         if st.button("📄 Download PDF", key="download_pdf", use_container_width=True):
@@ -454,15 +465,6 @@ elif auth.is_admin_logged_in():
                             except Exception as e:
                                 st.error(f"❌ Error generating PDF: {e}")
 
-                    st.container(height=30, border=False)
-
-                    feedback_history = repo.get_feedback_history(start_date, end_date)
-                    if feedback_history:
-                        data = utils.process_feedback_history(feedback_history)
-                        st.subheader("📝 Riwayat Feedback")
-                        st.dataframe(data, use_container_width=True, hide_index=True, height=400)
-                    else:
-                        st.info("📝 Belum ada riwayat feedback untuk periode ini.")
             except Exception as e:
                 st.error(f"❌ Error loading statistics: {e}")
     
