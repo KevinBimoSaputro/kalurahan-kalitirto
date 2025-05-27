@@ -283,7 +283,7 @@ if not model_available:
                     success = create_models.create_dummy_models()
                     if success:
                         st.success("✅ Model berhasil dibuat! Aplikasi akan dimuat ulang...")
-                        st.balloons()
+                        # Hapus st.balloons() - tidak perlu lagi
                         # Clear cache and rerun
                         st.cache_resource.clear()
                         st.rerun()
