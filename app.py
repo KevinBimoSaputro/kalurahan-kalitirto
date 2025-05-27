@@ -20,11 +20,28 @@ if "admin_logged_in" not in st.session_state:
 if "show_admin_login" not in st.session_state:
     st.session_state.show_admin_login = False
 
-# CSS untuk styling
+# CSS untuk styling dengan background
 st.markdown("""
 <style>
+    /* Background Image */
+    .stApp {
+        background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), 
+                    url('/images/kelurahan-bg.png');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+    
+    /* Alternative: Jika ingin background lebih subtle */
     .main-content {
         animation: fadeIn 0.8s ease-out;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        padding: 2rem;
+        margin: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
     }
     
     @keyframes fadeIn {
@@ -43,6 +60,10 @@ st.markdown("""
         margin-bottom: 1.5rem;
         color: #2c3e50;
         text-align: center;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
     
     .header-section h1 {
@@ -50,6 +71,7 @@ st.markdown("""
         font-weight: 700;
         margin-bottom: 0.3rem;
         color: #2c3e50;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     }
     
     .header-section h2 {
@@ -61,8 +83,8 @@ st.markdown("""
     
     .header-section hr {
         border: none;
-        height: 1px;
-        background: #dee2e6;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #4facfe, transparent);
         margin: 1.5rem auto;
         width: 60%;
     }
@@ -91,20 +113,48 @@ st.markdown("""
     }
     
     .admin-panel {
-        background: #4facfe;
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         padding: 1.5rem;
         border-radius: 15px;
         margin-bottom: 2rem;
         color: white;
-        box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+        box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
+        backdrop-filter: blur(10px);
     }
     
     .status-card {
-        background: #f8f9fa;
+        background: rgba(248, 249, 250, 0.95);
         padding: 1rem;
         border-radius: 10px;
         border-left: 4px solid #28a745;
         margin-bottom: 1rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Chat Input Styling */
+    .stChatInput {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Cards and containers */
+    .stContainer {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 1rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    /* Metrics styling */
+    .stMetric {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
     }
     
     /* Hide Streamlit branding */
@@ -114,8 +164,17 @@ st.markdown("""
     
     /* Responsive design */
     @media (max-width: 768px) {
+        .stApp {
+            background-attachment: scroll;
+        }
+        
+        .main-content {
+            margin: 0.5rem;
+            padding: 1rem;
+        }
+        
         .header-section {
-            padding: 0.3rem 0;
+            padding: 1rem;
         }
         
         .header-section h1 {
@@ -155,6 +214,7 @@ except:
 
 if not model_available:
     # Enhanced model generation page
+    st.markdown('<div class="main-content">', unsafe_allow_html=True)
     st.markdown("""
     <div style="text-align: center; padding: 3rem;">
         <h1>🤖 Setup Model Machine Learning</h1>
@@ -191,10 +251,12 @@ if not model_available:
     - **Waktu proses**: sekitar 10-30 detik
     - **Tidak memerlukan internet** - semua proses lokal
     """)
+    st.markdown('</div>', unsafe_allow_html=True)
     st.stop()
 
 # Logika tampilan berdasarkan status
 if st.session_state.show_admin_login and not auth.is_admin_logged_in():
+    st.markdown('<div class="main-content">', unsafe_allow_html=True)
     # Tombol kembali di tengah atas dengan spacing yang lebih baik
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
@@ -207,6 +269,7 @@ if st.session_state.show_admin_login and not auth.is_admin_logged_in():
     
     # Form login admin tanpa column wrapper - langsung ke kiri
     auth.admin_login_form()
+    st.markdown('</div>', unsafe_allow_html=True)
 
 elif auth.is_admin_logged_in():
     # Dashboard Admin
@@ -308,7 +371,7 @@ else:
     # Tampilan User Biasa - Form Feedback
     st.markdown('<div class="main-content">', unsafe_allow_html=True)
     
-    # Header tanpa kotak background
+    # Header dengan background
     st.markdown("""
     <div class="header-section">
         <h1>📝 Form Kritik dan Saran</h1>
@@ -341,7 +404,7 @@ else:
                 st.error(f"Terjadi kesalahan: {e}")
                 st.toast("❌ Terjadi kesalahan. Silakan coba lagi.")
     
-    # Kontak saja yang tersisa
+    # Kontak dengan background
     st.markdown("""
     ---
     ### 📞 Kontak
