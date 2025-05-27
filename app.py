@@ -322,7 +322,7 @@ elif auth.is_admin_logged_in():
     st.markdown('<div class="main-content">', unsafe_allow_html=True)
     
     # Header admin dengan tombol logout
-    col1, col2 = st.columns([3, 1])
+    col1, col2 = st.columns([2, 1])
     with col1:
         st.markdown("""
         <div class="admin-panel">
@@ -337,11 +337,6 @@ elif auth.is_admin_logged_in():
         if st.button("👤 Mode User", key="back_to_user_mode"):
             st.session_state.show_admin_login = False
             st.session_state.admin_logged_in = False
-            st.rerun()
-        if st.button("🔄 Clear Cache", key="clear_cache"):
-            st.cache_resource.clear()
-            st.cache_data.clear()
-            st.success("✅ Cache cleared!")
             st.rerun()
     
     # Status Connection (Simple) - Hapus total feedback
