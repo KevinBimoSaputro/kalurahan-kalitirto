@@ -194,34 +194,54 @@ def generate_pdf_report(start_date=None, end_date=None, positive=0, neutral=0, n
         
         # Create PDF
         buffer = BytesIO()
-        doc = SimpleDocTemplate(buffer, pagesize=A4)
+        doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=1*inch, bottomMargin=1*inch)
         styles = getSampleStyleSheet()
         
         # Custom styles
         title_style = ParagraphStyle(
             'CustomTitle',
             parent=styles['Heading1'],
-            fontSize=18,
+            fontSize=20,
+            spaceAfter=20,
+            alignment=TA_CENTER,
+            textColor=colors.darkblue,
+            fontName='Helvetica-Bold'
+        )
+        
+        subtitle_style = ParagraphStyle(
+            'CustomSubtitle',
+            parent=styles['Normal'],
+            fontSize=14,
             spaceAfter=30,
             alignment=TA_CENTER,
-            textColor=colors.darkblue
+            textColor=colors.grey,
+            fontName='Helvetica'
         )
         
         heading_style = ParagraphStyle(
             'CustomHeading',
             parent=styles['Heading2'],
-            fontSize=14,
-            spaceAfter=12,
-            textColor=colors.darkblue
+            fontSize=16,
+            spaceAfter=15,
+            spaceBefore=20,
+            textColor=colors.darkblue,
+            fontName='Helvetica-Bold'
+        )
+        
+        normal_style = ParagraphStyle(
+            'CustomNormal',
+            parent=styles['Normal'],
+            fontSize=11,
+            spaceAfter=10,
+            fontName='Helvetica'
         )
         
         # Story elements
         story = []
         
         # Title
-        story.append(Paragraph("📊 LAPORAN STATISTIK SENTIMEN FEEDBACK", title_style))
-        story.append(Paragraph("Kelurahan Kalitirto", styles['Normal']))
-        story.append(Spacer(1, 20))
+        story.append(Paragraph("LAPORAN STATISTIK SENTIMEN FEEDBACK", title_style))
+        story.append(Paragraph("Kelurahan Kalitirto", subtitle_style))
         
         # Date range info
         start_dt = datetime.fromisoformat(start_date.replace('Z', '+00:00'))
@@ -232,52 +252,68 @@ def generate_pdf_report(start_date=None, end_date=None, positive=0, neutral=0, n
         end_local = end_dt.astimezone(jakarta_tz)
         
         if start_local.date() == end_local.date():
-            date_range = f"📅 Tanggal: {start_local.strftime('%d %B %Y')}"
+            date_range = f"Tanggal: {start_local.strftime('%d %B %Y')}"
         else:
-            date_range = f"📅 Periode: {start_local.strftime('%d %B %Y')} - {end_local.strftime('%d %B %Y')}"
+            date_range = f"Periode: {start_local.strftime('%d %B %Y')} - {end_local.strftime('%d %B %Y')}"
         
-        story.append(Paragraph(date_range, styles['Normal']))
-        story.append(Paragraph(f"🕒 Dibuat: {datetime.now().strftime('%d %B %Y, %H:%M WIB')}", styles['Normal']))
-        story.append(Spacer(1, 20))
+        story.append(Paragraph(date_range, normal_style))
+        story.append(Paragraph(f"Dibuat: {datetime.now().strftime('%d %B %Y, %H:%M WIB')}", normal_style))
+        story.append(Spacer(1, 30))
         
         # Summary statistics
-        story.append(Paragraph("📈 RINGKASAN STATISTIK", heading_style))
+        story.append(Paragraph("RINGKASAN STATISTIK", heading_style))
         
-        # Statistics table
+        # Statistics table with better formatting
         stats_data = [
             ['Kategori', 'Jumlah', 'Persentase'],
-            ['😊 Positif', str(positive), f"{(positive/total*100):.1f}%" if total > 0 else "0%"],
-            ['😐 Netral', str(neutral), f"{(neutral/total*100):.1f}%" if total > 0 else "0%"],
-            ['😞 Negatif', str(negative), f"{(negative/total*100):.1f}%" if total > 0 else "0%"],
-            ['📊 Total', str(total), "100%" if total > 0 else "0%"]
+            ['Positif', str(positive), f"{(positive/total*100):.1f}%" if total > 0 else "0%"],
+            ['Netral', str(neutral), f"{(neutral/total*100):.1f}%" if total > 0 else "0%"],
+            ['Negatif', str(negative), f"{(negative/total*100):.1f}%" if total > 0 else "0%"],
+            ['TOTAL', str(total), "100%" if total > 0 else "0%"]
         ]
         
-        stats_table = Table(stats_data, colWidths=[2*inch, 1*inch, 1*inch])
+        stats_table = Table(stats_data, colWidths=[2.5*inch, 1.5*inch, 1.5*inch])
         stats_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+            # Header styling
+            ('BACKGROUND', (0, 0), (-1, 0), colors.darkblue),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
             ('FONTSIZE', (0, 0), (-1, 0), 12),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black)
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 15),
+            ('TOPPADDING', (0, 0), (-1, 0), 15),
+            
+            # Data rows
+            ('BACKGROUND', (0, 1), (-1, -2), colors.lightgrey),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 1), (-1, -1), 11),
+            ('TOPPADDING', (0, 1), (-1, -1), 8),
+            ('BOTTOMPADDING', (0, 1), (-1, -1), 8),
+            
+            # Total row
+            ('BACKGROUND', (0, -1), (-1, -1), colors.darkgrey),
+            ('TEXTCOLOR', (0, -1), (-1, -1), colors.whitesmoke),
+            ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
+            
+            # Borders
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('LINEBELOW', (0, 0), (-1, 0), 2, colors.darkblue),
         ]))
         
         story.append(stats_table)
-        story.append(Spacer(1, 20))
+        story.append(Spacer(1, 30))
         
         # Feedback history
         if feedback_history:
-            story.append(Paragraph("📝 RIWAYAT FEEDBACK", heading_style))
-            story.append(Paragraph(f"Menampilkan {min(len(feedback_history), 50)} feedback terbaru dari periode yang dipilih", styles['Normal']))
-            story.append(Spacer(1, 10))
+            story.append(Paragraph("RIWAYAT FEEDBACK", heading_style))
+            story.append(Paragraph(f"Menampilkan {min(len(feedback_history), 30)} feedback dari periode yang dipilih", normal_style))
+            story.append(Spacer(1, 15))
             
             # Prepare feedback data for table
             feedback_data = [['No', 'Feedback', 'Sentimen', 'Tanggal']]
             
-            for i, item in enumerate(feedback_history[:50], 1):  # Limit to 50 items
-                feedback_text = item['feedback'][:60] + "..." if len(item['feedback']) > 60 else item['feedback']
+            for i, item in enumerate(feedback_history[:30], 1):  # Limit to 30 items for better formatting
+                feedback_text = item['feedback'][:70] + "..." if len(item['feedback']) > 70 else item['feedback']
                 created_at = pd.to_datetime(item['created_at']).astimezone(jakarta_tz).strftime('%d/%m/%Y %H:%M')
                 
                 feedback_data.append([
@@ -287,31 +323,45 @@ def generate_pdf_report(start_date=None, end_date=None, positive=0, neutral=0, n
                     created_at
                 ])
             
-            feedback_table = Table(feedback_data, colWidths=[0.4*inch, 3.2*inch, 0.8*inch, 1.6*inch])
+            feedback_table = Table(feedback_data, colWidths=[0.5*inch, 3.5*inch, 1*inch, 1.5*inch])
             feedback_table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                # Header
+                ('BACKGROUND', (0, 0), (-1, 0), colors.darkblue),
                 ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('ALIGN', (0, 0), (0, -1), 'CENTER'),  # No column center
+                ('ALIGN', (1, 0), (1, -1), 'LEFT'),    # Feedback column left
+                ('ALIGN', (2, 0), (2, -1), 'CENTER'),  # Sentimen column center
+                ('ALIGN', (3, 0), (3, -1), 'CENTER'),  # Date column center
                 ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
                 ('FONTSIZE', (0, 0), (-1, 0), 10),
-                ('FONTSIZE', (0, 1), (-1, -1), 8),
+                ('TOPPADDING', (0, 0), (-1, 0), 12),
                 ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                
+                # Data rows
+                ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 1), (-1, -1), 9),
+                ('TOPPADDING', (0, 1), (-1, -1), 6),
+                ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
                 ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-                ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                
+                # Borders
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+                ('LINEBELOW', (0, 0), (-1, 0), 2, colors.darkblue),
                 ('VALIGN', (0, 0), (-1, -1), 'TOP')
             ]))
             
             story.append(feedback_table)
         else:
-            story.append(Paragraph("📝 RIWAYAT FEEDBACK", heading_style))
-            story.append(Paragraph("Tidak ada feedback untuk periode yang dipilih.", styles['Normal']))
+            story.append(Paragraph("RIWAYAT FEEDBACK", heading_style))
+            story.append(Paragraph("Tidak ada feedback untuk periode yang dipilih.", normal_style))
         
         # Footer
-        story.append(Spacer(1, 30))
-        story.append(Paragraph("📍 Kelurahan Kalitirto", styles['Normal']))
-        story.append(Paragraph("🏠 Jalan Tanjungtirto, Kalitirto, Berbah, Sleman, 55573", styles['Normal']))
-        story.append(Paragraph("📞 (0274) 4986086 | ✉️ kalitirtokalurahan@gmail.com", styles['Normal']))
-        story.append(Paragraph("🌐 www.kalitirtosid.slemankab.go.id", styles['Normal']))
+        story.append(Spacer(1, 40))
+        story.append(Paragraph("KELURAHAN KALITIRTO", heading_style))
+        story.append(Paragraph("Jalan Tanjungtirto, Kalitirto, Berbah, Sleman, 55573", normal_style))
+        story.append(Paragraph("Telepon: (0274) 4986086", normal_style))
+        story.append(Paragraph("Email: kalitirtokalurahan@gmail.com", normal_style))
+        story.append(Paragraph("Website: www.kalitirtosid.slemankab.go.id", normal_style))
         
         # Build PDF
         doc.build(story)
