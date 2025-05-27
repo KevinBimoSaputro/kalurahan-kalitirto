@@ -13,12 +13,19 @@ import repository as repo
 import utils as utils
 import predict_text as predict
 import auth
+import time as time_module
 
 # Inisialisasi session state
 if "admin_logged_in" not in st.session_state:
     st.session_state.admin_logged_in = False
 if "show_admin_login" not in st.session_state:
     st.session_state.show_admin_login = False
+if "show_notification" not in st.session_state:
+    st.session_state.show_notification = False
+if "notification_message" not in st.session_state:
+    st.session_state.notification_message = ""
+if "notification_type" not in st.session_state:
+    st.session_state.notification_type = "success"
 
 # CSS untuk styling
 st.markdown("""
@@ -105,6 +112,52 @@ st.markdown("""
         border-radius: 10px;
         border-left: 4px solid #28a745;
         margin-bottom: 1rem;
+    }
+    
+    /* Custom notification styles */
+    .custom-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        color: white;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-out 1.7s forwards;
+        max-width: 400px;
+        word-wrap: break-word;
+    }
+    
+    .notification-success {
+        background: linear-gradient(135deg, #28a745, #20c997);
+    }
+    
+    .notification-error {
+        background: linear-gradient(135deg, #dc3545, #e74c3c);
+    }
+    
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(100%);
+        }
     }
     
     /* Uniform admin buttons */
@@ -213,6 +266,11 @@ st.markdown("""
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
+    /* Hide default streamlit notifications */
+    .stAlert {
+        display: none !important;
+    }
+    
     /* Responsive design */
     @media (max-width: 768px) {
         .header-section {
@@ -252,6 +310,13 @@ st.markdown("""
         .metric-label {
             font-size: 1rem !important;
         }
+        
+        .custom-notification {
+            top: 10px;
+            right: 10px;
+            left: 10px;
+            max-width: none;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -283,7 +348,6 @@ if not model_available:
                     success = create_models.create_dummy_models()
                     if success:
                         st.success("✅ Model berhasil dibuat! Aplikasi akan dimuat ulang...")
-                        # Hapus st.balloons() - tidak perlu lagi
                         # Clear cache and rerun
                         st.cache_resource.clear()
                         st.rerun()
@@ -301,6 +365,28 @@ if not model_available:
     - **Tidak memerlukan internet** - semua proses lokal
     """)
     st.stop()
+
+# Function to show custom notification
+def show_notification(message, notification_type="success"):
+    st.session_state.show_notification = True
+    st.session_state.notification_message = message
+    st.session_state.notification_type = notification_type
+    
+    # JavaScript to hide notification after 2 seconds
+    notification_class = f"notification-{notification_type}"
+    st.markdown(f"""
+    <div class="custom-notification {notification_class}" id="customNotification">
+        {message}
+    </div>
+    <script>
+        setTimeout(function() {{
+            var notification = document.getElementById('customNotification');
+            if (notification) {{
+                notification.style.display = 'none';
+            }}
+        }}, 2000);
+    </script>
+    """, unsafe_allow_html=True)
 
 # Logika tampilan berdasarkan status
 if st.session_state.show_admin_login and not auth.is_admin_logged_in():
@@ -499,15 +585,11 @@ else:
                 }
                 success = repo.insert_data(data)
                 if success:
-                    st.success("✅ Terima kasih atas kritik dan saran Anda! Masukan Anda telah tersimpan.")
-                    st.toast("🎉 Feedback berhasil disimpan!", icon="✅")
-                    # Hapus st.balloons()
+                    show_notification("🎉 Terima kasih! Feedback Anda telah tersimpan.", "success")
                 else:
-                    st.error("❌ Gagal menyimpan feedback. Silakan coba lagi.")
-                    st.toast("❌ Gagal menyimpan feedback!", icon="🚨")
+                    show_notification("❌ Gagal menyimpan feedback. Silakan coba lagi.", "error")
             except Exception as e:
-                st.error(f"Terjadi kesalahan: {e}")
-                st.toast("❌ Terjadi kesalahan. Silakan coba lagi.", icon="⚠️")
+                show_notification("❌ Terjadi kesalahan. Silakan coba lagi.", "error")
     
     # Kontak saja yang tersisa
     st.markdown("""
