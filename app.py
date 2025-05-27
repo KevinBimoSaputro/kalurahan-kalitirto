@@ -186,17 +186,6 @@ st.markdown("""
         margin: 0;
     }
     
-    /* Separator line between chart and metrics */
-    .chart-separator {
-        border: none;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, #dee2e6, transparent);
-        margin: 2rem 0;
-        width: 80%;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
     /* Hide Streamlit branding */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
@@ -240,11 +229,6 @@ st.markdown("""
         
         .metric-label {
             font-size: 1rem !important;
-        }
-        
-        .chart-separator {
-            margin: 1.5rem 0;
-            width: 90%;
         }
     }
 </style>
@@ -383,8 +367,8 @@ elif auth.is_admin_logged_in():
                     # Chart
                     utils.create_chart(positive, neutral, negative)
                     
-                    # Separator line
-                    st.markdown('<hr class="chart-separator">', unsafe_allow_html=True)
+                    # Separator using Streamlit divider
+                    st.divider()
 
                     col1, col2, col3, col4 = st.columns(4)
                     total_data = positive + neutral + negative
