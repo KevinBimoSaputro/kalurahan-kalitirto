@@ -158,8 +158,11 @@ def create_chart(positive, neutral, negative):
         insidetextorientation='auto',
         hoverinfo='skip',
         hovertemplate=None,
-        textfont=dict(color='white', size=14, family='Arial Black'),  # Semua teks putih dan tebal
-        textfont_size=14,  # Ukuran font konsisten
+        textfont=dict(
+            color='white', 
+            size=16, 
+            family='Arial, sans-serif'
+        ),
         marker=dict(
             colors=colors,  # Pastikan warna sesuai urutan
             line=dict(color='#FFFFFF', width=2)
