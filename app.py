@@ -144,6 +144,53 @@ st.markdown("""
             margin-bottom: 0.8rem;
         }
     }
+
+    .metric-box-positif {
+        background-color: #e5f8ed;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        text-align: center;
+        color: #34495e;
+        border-left: 4px solid #28a745;
+    }
+
+    .metric-box-netral {
+        background-color: #f8f9fa;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        text-align: center;
+        color: #34495e;
+        border-left: 4px solid #6c757d;
+    }
+
+    .metric-box-negatif {
+        background-color: #fdeded;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        text-align: center;
+        color: #34495e;
+        border-left: 4px solid #dc3545;
+    }
+
+    .metric-box-total {
+        background-color: #f0f4ff;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        text-align: center;
+        color: #34495e;
+        border-left: 4px solid #007bff;
+    }
+
+    .metric-label {
+        font-size: 1rem;
+        font-weight: 500;
+        margin-bottom: 0.2rem;
+    }
+
+    .metric-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -283,17 +330,36 @@ elif auth.is_admin_logged_in():
                     total_data = positive + neutral + negative
                     
                     with col1:
-                        st.metric(label="😊 Positif", value=positive, delta=None, help="Positive feedback")
-                        st.markdown('<div class="stMetricValue-positif"></div>', unsafe_allow_html=True)
+                        st.markdown(f"""
+                        <div class="metric-box-positif">
+                            <div class="metric-label">😊 Positif</div>
+                            <div class="metric-value">{positive}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        
                     with col2:  
-                        st.metric(label="😐 Netral", value=neutral, delta=None, help="Netral feedback")
-                        st.markdown('<div class="stMetricValue-netral"></div>', unsafe_allow_html=True)
+                        st.markdown(f"""
+                        <div class="metric-box-netral">
+                            <div class="metric-label">😐 Netral</div>
+                            <div class="metric-value">{neutral}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        
                     with col3:
-                        st.metric(label="😞 Negatif", value=negative, delta=None, help="Negative feedback")
-                        st.markdown('<div class="stMetricValue-negatif"></div>', unsafe_allow_html=True)
+                        st.markdown(f"""
+                        <div class="metric-box-negatif">
+                            <div class="metric-label">😞 Negatif</div>
+                            <div class="metric-value">{negative}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        
                     with col4:
-                        st.metric(label="📊 Total", value=total_data, delta=None, help="Total semua feedback")
-                        st.markdown('<div class="stMetricValue-total"></div>', unsafe_allow_html=True)
+                        st.markdown(f"""
+                        <div class="metric-box-total">
+                            <div class="metric-label">📊 Total</div>
+                            <div class="metric-value">{total_data}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
 
                     st.container(height=30, border=False)
 
