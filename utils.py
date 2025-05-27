@@ -179,6 +179,20 @@ def create_chart(positive, neutral, negative):
     
     st.plotly_chart(fig, use_container_width=True)
 
+def smart_truncate(text, max_length=60):
+    """Smart text truncation that tries to break at word boundaries"""
+    if len(text) <= max_length:
+        return text
+    
+    # Find the last space within the limit
+    truncated = text[:max_length]
+    last_space = truncated.rfind(' ')
+    
+    if last_space > max_length * 0.7:  # If space is reasonably close to the end
+        return text[:last_space] + "..."
+    else:
+        return text[:max_length-3] + "..."
+
 def generate_pdf_report(start_date=None, end_date=None, positive=0, neutral=0, negative=0):
     """Generate PDF report of feedback statistics for selected date range"""
     try:
@@ -309,11 +323,12 @@ def generate_pdf_report(start_date=None, end_date=None, positive=0, neutral=0, n
             story.append(Paragraph(f"Menampilkan {min(len(feedback_history), 30)} feedback dari periode yang dipilih", normal_style))
             story.append(Spacer(1, 15))
             
-            # Prepare feedback data for table
+            # Prepare feedback data for table with improved column widths
             feedback_data = [['No', 'Feedback', 'Sentimen', 'Tanggal']]
             
             for i, item in enumerate(feedback_history[:30], 1):  # Limit to 30 items for better formatting
-                feedback_text = item['feedback'][:70] + "..." if len(item['feedback']) > 70 else item['feedback']
+                # Smart truncate feedback text
+                feedback_text = smart_truncate(item['feedback'], 55)
                 created_at = pd.to_datetime(item['created_at']).astimezone(jakarta_tz).strftime('%d/%m/%Y %H:%M')
                 
                 feedback_data.append([
@@ -323,7 +338,8 @@ def generate_pdf_report(start_date=None, end_date=None, positive=0, neutral=0, n
                     created_at
                 ])
             
-            feedback_table = Table(feedback_data, colWidths=[0.5*inch, 3.5*inch, 1*inch, 1.5*inch])
+            # Improved column widths for better layout
+            feedback_table = Table(feedback_data, colWidths=[0.4*inch, 3.2*inch, 0.8*inch, 1.2*inch])
             feedback_table.setStyle(TableStyle([
                 # Header
                 ('BACKGROUND', (0, 0), (-1, 0), colors.darkblue),
@@ -333,21 +349,26 @@ def generate_pdf_report(start_date=None, end_date=None, positive=0, neutral=0, n
                 ('ALIGN', (2, 0), (2, -1), 'CENTER'),  # Sentimen column center
                 ('ALIGN', (3, 0), (3, -1), 'CENTER'),  # Date column center
                 ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, 0), 10),
-                ('TOPPADDING', (0, 0), (-1, 0), 12),
-                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                ('FONTSIZE', (0, 0), (-1, 0), 9),      # Reduced header font size
+                ('TOPPADDING', (0, 0), (-1, 0), 8),    # Reduced padding
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+                ('LEFTPADDING', (0, 0), (-1, -1), 4),  # Consistent left padding
+                ('RIGHTPADDING', (0, 0), (-1, -1), 4), # Consistent right padding
                 
                 # Data rows
                 ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-                ('FONTSIZE', (0, 1), (-1, -1), 9),
-                ('TOPPADDING', (0, 1), (-1, -1), 6),
-                ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
+                ('FONTSIZE', (0, 1), (-1, -1), 8),     # Reduced data font size
+                ('TOPPADDING', (0, 1), (-1, -1), 4),   # Reduced padding
+                ('BOTTOMPADDING', (0, 1), (-1, -1), 4),
                 ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
                 
                 # Borders
                 ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
                 ('LINEBELOW', (0, 0), (-1, 0), 2, colors.darkblue),
-                ('VALIGN', (0, 0), (-1, -1), 'TOP')
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                
+                # Word wrap for feedback column
+                ('WORDWRAP', (1, 1), (1, -1), True),
             ]))
             
             story.append(feedback_table)
