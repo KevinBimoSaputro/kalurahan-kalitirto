@@ -500,12 +500,14 @@ else:
                 success = repo.insert_data(data)
                 if success:
                     st.success("✅ Terima kasih atas kritik dan saran Anda! Masukan Anda telah tersimpan.")
-                    st.balloons()
+                    st.toast("🎉 Feedback berhasil disimpan!", icon="✅")
+                    # Hapus st.balloons()
                 else:
                     st.error("❌ Gagal menyimpan feedback. Silakan coba lagi.")
+                    st.toast("❌ Gagal menyimpan feedback!", icon="🚨")
             except Exception as e:
                 st.error(f"Terjadi kesalahan: {e}")
-                st.toast("❌ Terjadi kesalahan. Silakan coba lagi.")
+                st.toast("❌ Terjadi kesalahan. Silakan coba lagi.", icon="⚠️")
     
     # Kontak saja yang tersisa
     st.markdown("""
