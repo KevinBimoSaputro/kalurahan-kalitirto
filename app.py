@@ -186,10 +186,10 @@ st.markdown("""
         margin: 0;
     }
     
-    /* Chart spacing fix */
+    /* Chart spacing fix - like 2 enters in MS Word */
     .chart-container {
-        margin-bottom: 3rem !important;
-        padding-bottom: 1.5rem;
+        margin-bottom: 5rem !important;
+        padding-bottom: 2rem !important;
     }
     
     /* Hide Streamlit branding */
