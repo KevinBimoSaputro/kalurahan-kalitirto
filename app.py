@@ -107,6 +107,91 @@ st.markdown("""
         margin-bottom: 1rem;
     }
     
+    /* Clean metric boxes without borders */
+    .metric-box-positif {
+        background: #28a745 !important;
+        border: none !important;
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        color: white !important;
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        transition: transform 0.3s ease;
+        margin-bottom: 1rem;
+    }
+    .metric-box-positif:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+
+    .metric-box-netral {
+        background: #ffc107 !important;
+        border: none !important;
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        color: white !important;
+        box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+        transition: transform 0.3s ease;
+        margin-bottom: 1rem;
+    }
+    .metric-box-netral:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+    }
+
+    .metric-box-negatif {
+        background: #dc3545 !important;
+        border: none !important;
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        color: white !important;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        transition: transform 0.3s ease;
+        margin-bottom: 1rem;
+    }
+    .metric-box-negatif:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+    }
+
+    .metric-box-total {
+        background: #6c757d !important;
+        border: none !important;
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        color: white !important;
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        transition: transform 0.3s ease;
+        margin-bottom: 1rem;
+    }
+    .metric-box-total:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+    }
+
+    .metric-label {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: white !important;
+    }
+
+    .metric-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: white !important;
+        margin: 0;
+    }
+    
+    /* Chart spacing fix */
+    .chart-container {
+        margin-bottom: 2rem !important;
+        padding-bottom: 1rem;
+    }
+    
     /* Hide Streamlit branding */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
@@ -143,53 +228,14 @@ st.markdown("""
             text-align: center;
             margin-bottom: 0.8rem;
         }
-    }
-
-    .metric-box-positif {
-        background-color: #e5f8ed;
-        border-radius: 0.5rem;
-        padding: 1rem;
-        text-align: center;
-        color: #34495e;
-        border-left: 4px solid #28a745;
-    }
-
-    .metric-box-netral {
-        background-color: #f8f9fa;
-        border-radius: 0.5rem;
-        padding: 1rem;
-        text-align: center;
-        color: #34495e;
-        border-left: 4px solid #6c757d;
-    }
-
-    .metric-box-negatif {
-        background-color: #fdeded;
-        border-radius: 0.5rem;
-        padding: 1rem;
-        text-align: center;
-        color: #34495e;
-        border-left: 4px solid #dc3545;
-    }
-
-    .metric-box-total {
-        background-color: #f0f4ff;
-        border-radius: 0.5rem;
-        padding: 1rem;
-        text-align: center;
-        color: #34495e;
-        border-left: 4px solid #007bff;
-    }
-
-    .metric-label {
-        font-size: 1rem;
-        font-weight: 500;
-        margin-bottom: 0.2rem;
-    }
-
-    .metric-value {
-        font-size: 1.5rem;
-        font-weight: 700;
+        
+        .metric-value {
+            font-size: 2rem !important;
+        }
+        
+        .metric-label {
+            font-size: 1rem !important;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -324,7 +370,10 @@ elif auth.is_admin_logged_in():
                     st.warning("📭 Tidak ada data untuk periode ini.")
                     st.info(f"💡 **Tip:** Coba ubah rentang tanggal. Total data tersedia: {total_records} feedback")
                 else:
+                    # Chart with proper spacing
+                    st.markdown('<div class="chart-container">', unsafe_allow_html=True)
                     utils.create_chart(positive, neutral, negative)
+                    st.markdown('</div>', unsafe_allow_html=True)
 
                     col1, col2, col3, col4 = st.columns(4)
                     total_data = positive + neutral + negative
