@@ -270,13 +270,13 @@ def generate_pdf_report(start_date=None, end_date=None, positive=0, neutral=0, n
         # Feedback history
         if feedback_history:
             story.append(Paragraph("📝 RIWAYAT FEEDBACK", heading_style))
-            story.append(Paragraph(f"Menampilkan semua {len(feedback_history)} feedback dari periode yang dipilih", styles['Normal']))
+            story.append(Paragraph(f"Menampilkan {min(len(feedback_history), 50)} feedback terbaru dari periode yang dipilih", styles['Normal']))
             story.append(Spacer(1, 10))
             
             # Prepare feedback data for table
             feedback_data = [['No', 'Feedback', 'Sentimen', 'Tanggal']]
             
-            for i, item in enumerate(feedback_history, 1):  # Show ALL items
+            for i, item in enumerate(feedback_history[:50], 1):  # Limit to 50 items
                 feedback_text = item['feedback'][:60] + "..." if len(item['feedback']) > 60 else item['feedback']
                 created_at = pd.to_datetime(item['created_at']).astimezone(jakarta_tz).strftime('%d/%m/%Y %H:%M')
                 
@@ -287,14 +287,14 @@ def generate_pdf_report(start_date=None, end_date=None, positive=0, neutral=0, n
                     created_at
                 ])
             
-            feedback_table = Table(feedback_data, colWidths=[0.4*inch, 3.5*inch, 0.8*inch, 1.3*inch])
+            feedback_table = Table(feedback_data, colWidths=[0.4*inch, 3.2*inch, 0.8*inch, 1.6*inch])
             feedback_table.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
                 ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
                 ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
                 ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
                 ('FONTSIZE', (0, 0), (-1, 0), 10),
-                ('FONTSIZE', (0, 1), (-1, -1), 7),
+                ('FONTSIZE', (0, 1), (-1, -1), 8),
                 ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
                 ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
                 ('GRID', (0, 0), (-1, -1), 1, colors.black),
@@ -309,8 +309,9 @@ def generate_pdf_report(start_date=None, end_date=None, positive=0, neutral=0, n
         # Footer
         story.append(Spacer(1, 30))
         story.append(Paragraph("📍 Kelurahan Kalitirto", styles['Normal']))
-        story.append(Paragraph("📞 (0274) 123-4567 | ✉️ kelurahan.kalitirto@gmail.com", styles['Normal']))
-        story.append(Paragraph("🏠 Jl. Kalitirto No. 123, Yogyakarta", styles['Normal']))
+        story.append(Paragraph("🏠 Jalan Tanjungtirto, Kalitirto, Berbah, Sleman, 55573", styles['Normal']))
+        story.append(Paragraph("📞 (0274) 4986086 | ✉️ kalitirtokalurahan@gmail.com", styles['Normal']))
+        story.append(Paragraph("🌐 www.kalitirtosid.slemankab.go.id", styles['Normal']))
         
         # Build PDF
         doc.build(story)
