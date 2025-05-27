@@ -338,6 +338,23 @@ elif auth.is_admin_logged_in():
             st.session_state.show_admin_login = False
             st.session_state.admin_logged_in = False
             st.rerun()
+        if st.button("📄 Download PDF", key="download_pdf"):
+            # Generate PDF akan ditambahkan di utils.py
+            try:
+                pdf_data = utils.generate_pdf_report()
+                if pdf_data:
+                    st.download_button(
+                        label="📥 Download Laporan PDF",
+                        data=pdf_data,
+                        file_name=f"laporan_feedback_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+                        mime="application/pdf",
+                        key="download_pdf_btn"
+                    )
+                    st.success("✅ PDF siap didownload!")
+                else:
+                    st.error("❌ Gagal membuat PDF")
+            except Exception as e:
+                st.error(f"❌ Error generating PDF: {e}")
     
     # Status Connection (Simple) - Hapus total feedback
     connection_status = repo.get_connection_status()
