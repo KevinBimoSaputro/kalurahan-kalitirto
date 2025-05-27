@@ -107,6 +107,26 @@ st.markdown("""
         margin-bottom: 1rem;
     }
     
+    /* Uniform admin buttons */
+    .stButton > button {
+        background: linear-gradient(135deg, #6c757d, #5a6268) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 10px !important;
+        padding: 0.5rem 1rem !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3) !important;
+        transition: all 0.3s ease !important;
+        width: 100% !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4) !important;
+        background: linear-gradient(135deg, #5a6268, #495057) !important;
+    }
+    
     /* Clean metric boxes without borders */
     .metric-box-positif {
         background: #28a745 !important;
@@ -322,15 +342,14 @@ elif auth.is_admin_logged_in():
             st.success("✅ Cache cleared!")
             st.rerun()
     
-    # Status Connection (Simple)
+    # Status Connection (Simple) - Hapus total feedback
     connection_status = repo.get_connection_status()
-    total_records = repo.get_total_records()
     
     if connection_status:
-        st.markdown(f"""
+        st.markdown("""
         <div class="status-card">
             <strong>📊 Status Sistem</strong><br>
-            ✅ Database terhubung | 📝 Total feedback: {total_records} data
+            ✅ Database terhubung
         </div>
         """, unsafe_allow_html=True)
     else:
@@ -362,7 +381,7 @@ elif auth.is_admin_logged_in():
 
                 if positive + neutral + negative == 0:
                     st.warning("📭 Tidak ada data untuk periode ini.")
-                    st.info(f"💡 **Tip:** Coba ubah rentang tanggal. Total data tersedia: {total_records} feedback")
+                    st.info("💡 **Tip:** Coba ubah rentang tanggal untuk melihat data feedback.")
                 else:
                     # Chart
                     utils.create_chart(positive, neutral, negative)
