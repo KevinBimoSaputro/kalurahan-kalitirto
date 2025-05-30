@@ -1,3 +1,24 @@
+
+import streamlit as st
+
+# === LOGIN SIMPLE ===
+def login():
+    st.title("🔐 Login Admin")
+    password = st.text_input("Masukkan Password", type="password")
+    if st.button("Login"):
+        if password == "admin123":
+            st.session_state['logged_in'] = True
+        else:
+            st.error("Password salah!")
+
+# Cek login status
+if 'logged_in' not in st.session_state:
+    st.session_state['logged_in'] = False
+
+if not st.session_state['logged_in']:
+    login()
+    st.stop()
+
 import streamlit as st
 
 # MUST be the first Streamlit command
