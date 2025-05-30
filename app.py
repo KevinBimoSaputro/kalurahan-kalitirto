@@ -427,12 +427,14 @@ elif auth.is_admin_logged_in():
     
     # Status Connection (Simple) - Hapus total feedback
     connection_status = repo.get_connection_status()
-    
+    model_accuracy = predict.get_model_accuracy()
+
     if connection_status:
-        st.markdown("""
+        accuracy_text = f" | 🎯 Akurasi Model: {model_accuracy}%" if model_accuracy else ""
+        st.markdown(f"""
         <div class="status-card">
             <strong>📊 Status Sistem</strong><br>
-            ✅ Database terhubung
+            ✅ Database terhubung{accuracy_text}
         </div>
         """, unsafe_allow_html=True)
     else:
@@ -564,7 +566,7 @@ else:
     st.markdown("""
     <div class="header-section">
         <h1>📝 Form Kritik dan Saran</h1>
-        <h2>Kalurahan Kalitirto, Kapanewon Berbah, Kabupaten Sleman</h2>
+        <h2>Kelurahan Kalitirto</h2>
         <hr>
         <h3>💬 Berikan Kritik dan Saran Anda</h3>
         <p class="support-text">
