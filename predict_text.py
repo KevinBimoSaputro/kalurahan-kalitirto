@@ -67,28 +67,63 @@ def predict(text):
         return "netral"
 
 def get_model_accuracy():
-    """Fungsi untuk mendapatkan akurasi model"""
+    """Fungsi untuk mendapatkan akurasi model dengan data test yang lebih realistis"""
     if model is None or vectorizer is None:
         return None
     
     try:
-        # Data test sederhana untuk evaluasi akurasi
+        # Data test yang lebih menantang dan realistis
         test_texts = [
-            'pelayanan sangat bagus dan memuaskan',
-            'staff ramah dan profesional',
-            'fasilitas lengkap dan bersih',
+            # Positif (jelas)
+            'pelayanan sangat bagus dan memuaskan sekali',
+            'staff ramah dan sangat membantu',
+            'proses cepat dan efisien',
+            
+            # Positif (ambigu)
+            'lumayan bagus pelayanannya',
+            'cukup puas dengan layanan',
+            
+            # Negatif (jelas)
             'pelayanan buruk dan mengecewakan',
             'staff tidak ramah dan lambat',
-            'fasilitas kotor dan tidak terawat',
+            'proses lama dan berbelit',
+            
+            # Negatif (ambigu)
+            'kurang memuaskan pelayanannya',
+            'agak kecewa dengan layanan',
+            
+            # Netral (jelas)
             'pelayanan biasa saja',
-            'staff cukup baik',
-            'fasilitas standar'
+            'standar seperti biasanya',
+            'tidak ada yang istimewa',
+            
+            # Netral (ambigu)
+            'pelayanan cukup',
+            'bisa lebih baik lagi',
+            
+            # Kasus sulit (mixed sentiment)
+            'pelayanan bagus tapi ruangannya kotor',
+            'staff ramah namun prosesnya lama',
+            'fasilitas bagus tetapi antrian panjang',
+            'cepat sih tapi kurang informatif',
+            'bersih dan rapi namun petugasnya galak'
         ]
         
         test_labels = [
+            # Positif (jelas)
             'positif', 'positif', 'positif',
-            'negatif', 'negatif', 'negatif', 
-            'netral', 'netral', 'netral'
+            # Positif (ambigu) 
+            'positif', 'positif',
+            # Negatif (jelas)
+            'negatif', 'negatif', 'negatif',
+            # Negatif (ambigu)
+            'negatif', 'negatif',
+            # Netral (jelas)
+            'netral', 'netral', 'netral',
+            # Netral (ambigu)
+            'netral', 'netral',
+            # Kasus sulit (mixed sentiment) - ini yang bikin akurasi turun
+            'netral', 'negatif', 'negatif', 'negatif', 'negatif'
         ]
         
         # Preprocess test texts
