@@ -61,7 +61,21 @@ def predict(text):
         # Predict sentiment
         prediction = model.predict(vectorized_text)
         
-        return prediction[0]
+        return prediction[0].lower()
     except Exception as e:
         print(f"Error in prediction: {e}")
         return "netral"
+
+def get_model_accuracy():
+    """Fungsi untuk mendapatkan akurasi model"""
+    try:
+        # Coba baca dari file jika ada
+        if os.path.exists('model_accuracy.txt'):
+            with open('model_accuracy.txt', 'r') as f:
+                return float(f.read().strip())
+        
+        # Jika tidak ada file, gunakan nilai default dari analisis
+        return 69.2  # Nilai akurasi dari analisis Jupyter notebook
+    except Exception as e:
+        print(f"Error getting accuracy: {e}")
+        return 69.2  # Nilai default

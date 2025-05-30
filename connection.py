@@ -6,13 +6,21 @@ import os
 @st.cache_resource 
 def load_database():
     try:
-        url = st.secrets["supabase"]["url"]
-        key = st.secrets["supabase"]["key"]
+        # Use the correct URL and key
+        url = "https://gtxzselygjujqkhigggu.supabase.co"
+        key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0eHpzZWx5Z2p1anFraGlnZ2d1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY4NDg2ODgsImV4cCI6MjA2MjQyNDY4OH0.WOfZ90ejJBDBtg14Z_5kV_at1nqcp2617jI6uQRRUV8"
+        table = "mst_feedback"
+        
+        # Create client
         client = create_client(url, key)
-        table = st.secrets["supabase"]["table"]
+        
+        # Test connection with a simple query
+        test_result = client.table(table).select("*").limit(1).execute()
+        
         return client.table(table)
+        
     except Exception as e:
-        st.error(f"Error connecting to database: {e}")
+        st.error(f"❌ Database connection error: {e}")
         return None
 
 @st.cache_resource 
