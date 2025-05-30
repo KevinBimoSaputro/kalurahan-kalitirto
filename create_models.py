@@ -2,6 +2,8 @@ import joblib
 import numpy as np
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 import string
 
 def preprocess_text(text):
@@ -11,7 +13,7 @@ def preprocess_text(text):
     return text
 
 def create_dummy_models():
-    """Buat model dummy untuk sentiment analysis"""
+    """Buat model dummy untuk sentiment analysis dengan setup yang sama"""
     
     # Data training yang lebih lengkap
     texts = [
@@ -26,6 +28,11 @@ def create_dummy_models():
         'ruangan nyaman dan bersih',
         'sistem sudah bagus dan modern',
         'pelayanan memuaskan dan cepat',
+        'layanan prima dan berkualitas',
+        'sangat senang dengan pelayanan',
+        'petugas ramah dan informatif',
+        'proses mudah dan tidak ribet',
+        'fasilitas memadai dan nyaman',
         
         # Negatif  
         'pelayanan buruk dan mengecewakan sekali',
@@ -38,6 +45,11 @@ def create_dummy_models():
         'ruangan kotor dan tidak nyaman',
         'sistem masih manual dan ribet',
         'pelayanan buruk dan tidak profesional',
+        'layanan mengecewakan dan lambat',
+        'tidak puas dengan pelayanan',
+        'petugas kurang responsif',
+        'proses rumit dan membingungkan',
+        'fasilitas tidak memadai',
         
         # Netral
         'pelayanan biasa saja tidak istimewa',
@@ -49,19 +61,27 @@ def create_dummy_models():
         'petugas biasa saja',
         'ruangan standar',
         'sistem berjalan normal',
-        'pelayanan sesuai standar'
+        'pelayanan sesuai standar',
+        'layanan cukup memuaskan',
+        'tidak ada yang istimewa',
+        'petugas cukup membantu',
+        'proses berjalan lancar',
+        'fasilitas cukup memadai'
     ]
     
     labels = [
-        # Positif (10)
+        # Positif (15)
+        'positif', 'positif', 'positif', 'positif', 'positif',
         'positif', 'positif', 'positif', 'positif', 'positif',
         'positif', 'positif', 'positif', 'positif', 'positif',
         
-        # Negatif (10)
+        # Negatif (15)
+        'negatif', 'negatif', 'negatif', 'negatif', 'negatif',
         'negatif', 'negatif', 'negatif', 'negatif', 'negatif',
         'negatif', 'negatif', 'negatif', 'negatif', 'negatif',
         
-        # Netral (10)
+        # Netral (15)
+        'netral', 'netral', 'netral', 'netral', 'netral',
         'netral', 'netral', 'netral', 'netral', 'netral',
         'netral', 'netral', 'netral', 'netral', 'netral'
     ]
@@ -70,20 +90,37 @@ def create_dummy_models():
         # Preprocess texts
         processed_texts = [preprocess_text(text) for text in texts]
         
-        # Buat dan train model
-        vectorizer = CountVectorizer(max_features=1000, ngram_range=(1, 2))
-        model = MultinomialNB(alpha=1.0)
+        # Menyiapkan fitur (teks) dan label - sama seperti kode Anda
+        X = processed_texts
+        y = labels
         
-        # Fit vectorizer dan model
-        X = vectorizer.fit_transform(processed_texts)
-        model.fit(X, labels)
+        # Membagi data menjadi data latih dan data uji - sama seperti kode Anda
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        
+        # Mengubah teks menjadi fitur vektor menggunakan CountVectorizer - sama seperti kode Anda
+        vectorizer = CountVectorizer()
+        X_train_vect = vectorizer.fit_transform(X_train)
+        X_test_vect = vectorizer.transform(X_test)
+        
+        # Inisialisasi model Naïve Bayes - sama seperti kode Anda
+        model = MultinomialNB()
+        
+        # Melatih model - sama seperti kode Anda
+        model.fit(X_train_vect, y_train)
+        
+        # Memprediksi data uji - sama seperti kode Anda
+        y_pred = model.predict(X_test_vect)
+        
+        # Hitung akurasi
+        accuracy = accuracy_score(y_test, y_pred)
         
         # Save model dan vectorizer
         joblib.dump(model, 'model.pkl')
         joblib.dump(vectorizer, 'vectorizer.pkl')
         
-        print("✅ Model dummy berhasil dibuat!")
+        print("✅ Model berhasil dibuat dengan setup yang sama!")
         print("📁 File tersimpan: model.pkl, vectorizer.pkl")
+        print(f"🎯 Akurasi model: {accuracy:.1%}")
         
         # Test model
         test_texts = [
