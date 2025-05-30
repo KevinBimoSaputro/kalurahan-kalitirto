@@ -1,9 +1,6 @@
 streamlit
-supabase
 pandas
-plotly
 scikit-learn
-joblib
 nltk
-pytz
-reportlab
+joblib
+matplotlib
