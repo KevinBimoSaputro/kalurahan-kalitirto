@@ -65,3 +65,47 @@ def predict(text):
     except Exception as e:
         print(f"Error in prediction: {e}")
         return "netral"
+
+def get_model_accuracy():
+    """Fungsi untuk mendapatkan akurasi model"""
+    if model is None or vectorizer is None:
+        return None
+    
+    try:
+        # Data test sederhana untuk evaluasi akurasi
+        test_texts = [
+            'pelayanan sangat bagus dan memuaskan',
+            'staff ramah dan profesional',
+            'fasilitas lengkap dan bersih',
+            'pelayanan buruk dan mengecewakan',
+            'staff tidak ramah dan lambat',
+            'fasilitas kotor dan tidak terawat',
+            'pelayanan biasa saja',
+            'staff cukup baik',
+            'fasilitas standar'
+        ]
+        
+        test_labels = [
+            'positif', 'positif', 'positif',
+            'negatif', 'negatif', 'negatif', 
+            'netral', 'netral', 'netral'
+        ]
+        
+        # Preprocess test texts
+        processed_test_texts = [preprocess_text(text) for text in test_texts]
+        
+        # Vectorize test texts
+        test_vectors = vectorizer.transform(processed_test_texts)
+        
+        # Predict
+        predictions = model.predict(test_vectors)
+        
+        # Calculate accuracy
+        correct = sum(1 for pred, actual in zip(predictions, test_labels) if pred == actual)
+        accuracy = correct / len(test_labels)
+        
+        return round(accuracy * 100, 1)  # Return as percentage
+        
+    except Exception as e:
+        print(f"Error calculating accuracy: {e}")
+        return None
